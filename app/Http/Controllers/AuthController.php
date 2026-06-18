@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
-     * Tampilkan form registrasi.
+     * Show registration form.
      */
     public function showRegister()
     {
@@ -21,7 +21,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses registrasi pengguna baru.
+     * Handle registration request.
      */
     public function register(Request $request)
     {
@@ -29,31 +29,22 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ], [
-            'name.required' => 'Nama wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email ini sudah terdaftar.',
-            'password.required' => 'Kata sandi wajib diisi.',
-            'password.min' => 'Kata sandi minimal harus 8 karakter.',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'favorite_categories' => [], // Default array kosong untuk kategori favorit
+            'favorite_categories' => [], // Default empty array
         ]);
 
-        // Otomatis login setelah register
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Selamat datang di BeritaKini.');
+        return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Selamat datang.');
     }
 
     /**
-     * Tampilkan form login.
+     * Show login form.
      */
     public function showLogin()
     {
@@ -64,17 +55,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses login pengguna.
+     * Handle login request.
      */
     public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
-        ], [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'password.required' => 'Kata sandi wajib diisi.'
         ]);
 
         $remember = $request->has('remember');
@@ -86,12 +73,12 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Email atau kata sandi yang Anda masukkan salah.',
+            'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');
     }
 
     /**
-     * Proses logout pengguna.
+     * Log the user out.
      */
     public function logout(Request $request)
     {
@@ -100,6 +87,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Berhasil keluar dari akun.');
+        return redirect()->route('login')->with('success', 'Berhasil keluar.');
     }
 }
