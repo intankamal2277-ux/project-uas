@@ -30,4 +30,11 @@ class User extends Authenticatable
             'favorite_categories' => 'array',
         ];
     }
+        /**
+        * Get the saved news for the user.
+        */
+    public function savedNews()
+    {
+        return $this->hasMany(SavedNews::class);
+    }
 }
