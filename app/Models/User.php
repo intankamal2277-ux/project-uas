@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
 #[Fillable(['name', 'email', 'password', 'favorite_categories'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -28,6 +27,14 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'favorite_categories' => 'array',
         ];
+    }
+        /**
+        * Get the saved news for the user.
+        */
+    public function savedNews()
+    {
+        return $this->hasMany(SavedNews::class);
     }
 }
