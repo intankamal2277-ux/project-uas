@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->text('article_url');
+            $table->string('article_url_hash')->index(); // Hash MD5 dari URL
+            $table->text('comment_text');
             $table->timestamps();
         });
     }
